@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.TeleOp.TeleOpMotorSpin;
-
+@Config
 public class Catapult {
     public enum States{
         RESTING,
@@ -26,7 +27,7 @@ public class Catapult {
     }
     public static double RETURNING_POWER = 0;
     public static double LOADING_POWER = 0.2;
-    public static long LOAD_TIME = 200;
+    public static long LOAD_TIME = 400;
     long loadStartTime = 0;
     public void setState(States newState){
         currentState = newState;
