@@ -31,8 +31,7 @@ public class Catapult {
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     public static double LOADING_POWER = 0.3;
-    public static double RESTING_POS = 0;
-    public static double LOAD_POS = 225;
+    public static double LOCK_POS = 0;
     long timeOfFiring = 0;
     public void setState(States newState){
         currentState = newState;
@@ -63,7 +62,7 @@ public class Catapult {
                 }
                 break;
             case LOADING:
-                double power = pidfController.calculate(rightMotor.getCurrentPosition(),LOAD_POS);
+                double power = pidfController.calculate(rightMotor.getCurrentPosition(),LOCK_POS);
                 if (Math.abs(power) > LOADING_POWER){
                     power = LOADING_POWER * Math.signum(power);
                 }
@@ -71,10 +70,11 @@ public class Catapult {
                 rightMotor.setPower(power);
         }
         telemetry.addLine("POSITION RESETS EVERY TIME YOU TURN OFF AND ON AGAIN!!!");
-        telemetry.addLine("NORMAL POSITION STARTS WITH BLUE TAPE END POINTING TOWARDS THE SKY");
-        telemetry.addLine("DO NOT MODIFY THE POSITION TOO MUCH");
-        telemetry.addLine("PULLING MOTOR BACK TOO FAR COULD MAKE THINGS BREAK");
-        telemetry.addLine("LEFT BUMPER TO FIRE!!!");
+        telemetry.addLine("Set lock position:");
+        telemetry.addLine("1. Stop robot from running");
+        telemetry.addLine("2. Move Trigger to lock position manually:");
+        telemetry.addLine("3. Run the robot");
+        telemetry.addLine("4. Press Left Bumper to fire!:");
         telemetry.addData("currentPos",rightMotor.getCurrentPosition());
         telemetry.addData("currentState",currentState);
     }
