@@ -11,9 +11,9 @@ import org.firstinspires.ftc.teamcode.TeleOp.TeleOpMotorSpin;
 public class Catapult {
     public enum States{
         RESTING,
-        LOADING
+        SHOOTING
     }
-    public States currentState = States.LOADING;
+    public States currentState = States.RESTING;
     DcMotor leftMotor;
     DcMotor rightMotor;
     public static double kP = 0.006;
@@ -30,8 +30,8 @@ public class Catapult {
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
-    public static double LOADING_POWER = 0.3;
-    public static double LOCK_POS = 0;
+    public static double SHOOTING_POWER = 0.5;
+    public static double SHOOT_POS = 120;
     long timeOfFiring = 0;
     public void setState(States newState){
         currentState = newState;
@@ -57,17 +57,19 @@ public class Catapult {
             case RESTING:
                 leftMotor.setPower(0);
                 rightMotor.setPower(0);
-                if (System.currentTimeMillis() - timeOfFiring > 500){
-                    setState(States.LOADING);
-                }
                 break;
-            case LOADING:
-                double power = pidfController.calculate(rightMotor.getCurrentPosition(),LOCK_POS);
-                if (Math.abs(power) > LOADING_POWER){
-                    power = LOADING_POWER * Math.signum(power);
+            case SHOOTING:
+                double power = pidfController.calculate(rightMotor.getCurrentPosition(),SHOOT_POS);
+                if (Math.abs(power) > SHOOTING_POWER){
+                    power = SHOOTING_POWER * Math.signum(power);
+                }else if (Math.abs(power) < .05){
+                    power = 0;
                 }
                 leftMotor.setPower(-power);
                 rightMotor.setPower(power);
+                if (System.currentTimeMillis() - timeOfFiring > 500){
+                    setState(States.RESTING);
+                }
         }
         telemetry.addLine("POSITION RESETS EVERY TIME YOU TURN OFF AND ON AGAIN!!!");
         telemetry.addLine("Set lock position:");
